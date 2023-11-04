@@ -1,0 +1,176 @@
+<template>
+  <view class="ttt">
+    <text class="text">白塔流量分布</text>
+    <l-echart ref="chart" @finished="init" />
+  </view>
+</template>
+
+<script>
+  import * as echarts from '@/uni_modules/lime-echart/static/echarts.esm.min';
+  export default {
+    name: "CalendarFlow",
+    props: {
+      // 格式: data: {
+      //      y_data(ps: 下个月和上个月的字符串["2023-8", "2023-10"])
+      //      x_range(ps: 上个月的每天的数据[[{yyyy}-{MM}-{dd}, 231], ...])
+      data: {
+        type: Object,
+        // TODO: 写好请求后取消注释
+        require: true,
+        default: () => ({
+          "y_data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          "x_range": [
+            "14:04",
+            "14:14",
+            "14:24",
+            "14:34",
+            "14:44",
+            "14:54",
+            "15:04",
+            "15:14",
+            "15:24",
+            "15:34",
+            "15:44",
+            "15:54"
+          ]
+        })
+      }
+    },
+    methods: {
+      async init() {
+        // chart 图表实例不能存在data里
+        const chart = await this.$refs.chart.init(echarts);
+        chart.setOption(this.option);
+      },
+      // 计算最大最小值
+      countRange() {
+        this.option.calendar.range = this.data.range;
+        // 本月和上个月的每天的数据(this.data.lastMonth = [231, 321, ...])
+        this.option.series.data = this.data.data;
+        console.debug('父传子，两个月的数据 -> ', this.data)
+
+        let minY = Infinity // 初始化为正无穷大
+        let maxY = -Infinity
+        this.option.series.data.forEach((DataOfDay) => {
+          if (DataOfDay[1] > maxY) {
+            maxY = DataOfDay[1]
+          }
+          if (DataOfDay[1] < minY) {
+            minY = DataOfDay[1]
+          }
+        });
+
+        this.option.visualMap.min = 0;
+        this.option.visualMap.max = maxY;
+      }
+    },
+    watch: {
+      // 自适应图表最大值
+      data(newVal) {
+        // 更新内容
+        if (newVal.data && newVal.range) {
+          if (Array.isArray(newVal.data) && Array.isArray(newVal.range)) {
+            newVal.data.push(0);
+            this.option.series.data = newVal.data;
+            this.option.calendar.range = newVal.range;
+            this.countRange();
+            this.$refs.chart.setOption(this.option);
+          }
+        }
+      }
+    },
+    data() {
+      return {
+        option: {
+          title: {
+            show: false,
+            top: 0,
+            left: 'center',
+            text: '白塔流量分布',
+            textStyle: {
+              fontSize: 8,
+              color: '#249fcc'
+            }
+          },
+          tooltip: {},
+          visualMap: {
+            min: 0,
+            // TODO: 计算最大值
+            max: 1000,
+            type: 'continuous',
+            orient: 'horizontal',
+            left: 'center',
+            top: 0,
+            textStyle: {
+              color: '#fff'
+            },
+            calculable: false,
+          },
+          calendar: {
+            orient: 'vertical',
+            top: 55,
+            left: 30,
+            right: 30,
+            cellSize: ['auto', 18],
+            // 记得修改这里为空列表([])
+            // range: ['2023-08', '2023-10'],
+            range: [],
+            itemStyle: {
+              borderWidth: 0.5
+            },
+            yearLabel: {
+              show: false
+            },
+            monthLabel: {
+              show: true,
+              nameMap: 'ZH',
+              color: '#fff', // 设置字体颜色为白色
+              fontWeight: 'bolder',
+              fontSize: 10
+            },
+            dayLabel: {
+              show: true,
+              nameMap: 'ZH',
+              color: '#fff',
+              firstDay: 7,
+              fontWeight: 'bolder',
+              fontSize: 10
+            },
+            textStyle: {
+              color: '#fff'
+            },
+            splitLine: {
+              show: false,
+              lineStyle: {
+                color: "#fff",
+                width: 3
+              }
+            }
+          },
+          series: {
+            type: 'heatmap',
+            coordinateSystem: 'calendar',
+            // 记得修改这里为空列表([])
+            // data: this.getVirtualData('2023')
+            data: []
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .ttt {
+    width: 300px;
+    height: 340px;
+
+  }
+</style>

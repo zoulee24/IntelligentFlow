@@ -1,0 +1,114 @@
+<template>
+  <view class="contain">
+    <text class="title">妙应寺白塔分时客流</text>
+    <l-echart ref="chart" @finished="init" />
+  </view>
+</template>
+
+<script>
+  import * as echarts from '@/uni_modules/lime-echart/static/echarts.esm.min';
+  export default {
+    name: "MinutesFlow",
+    props: {
+      // 图表数据
+      data: {
+        type: Object,
+        require: true,
+        default: () => ({
+          x_range: [
+            '13:00', '13:10', '13:20', '13:30', '13:40', '13:50',
+            '14:00', '14:10', '14:20', '14:30', '14:40', '14:50',
+            '15:00', '15:10', '15:20', '15:30', '15:40', '15:50',
+          ],
+          y_data: [150, 230, 224, 218, 135, 147, 260, 218, 135, 147, 260, 147, 260, 218, 135, 147, 260,
+            260
+          ]
+        })
+      }
+    },
+    watch: {
+      // 更新图表数据
+      data(newVal) {
+        if (newVal != null) {
+          this.option.series.data = newVal.y_data;
+          this.option.xAxis.data = newVal.x_range;
+          this.$refs.chart.setOption(this.option);
+        } else {
+          console.log("data 空");
+        }
+      }
+    },
+    methods: {
+      async init() {
+        const chart = await this.$refs.chart.init(echarts);
+        chart.setOption(this.option);
+      }
+    },
+    data() {
+      return {
+        option: {
+          //标题
+          title: {
+            show: false,
+          },
+          grid: {
+            top: 10
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [150, 230, 224, 218, 135, 147, 260, 218, 135, 147, 260, 147, 260, 218, 135, 147, 260,
+              260
+            ],
+            show: true,
+            axisLabel: {
+              color: "#fff"
+            },
+            axisLine: {
+              show: false
+            },
+            nameTextStyle: {
+              color: "#fff"
+            },
+            axisTick: {
+              show: false
+            }
+          },
+          yAxis: {
+            type: 'value',
+            splitLine: {
+              show: false
+            },
+            axisLabel: {
+              color: "#fff"
+            },
+          },
+          series: {
+            data: [
+              '13:00', '13:10', '13:20', '13:30', '13:40', '13:50',
+              '14:00', '14:10', '14:20', '14:30', '14:40', '14:50',
+              '15:00', '15:10', '15:20', '15:30', '15:40', '15:50',
+            ],
+            type: 'line',
+            color: '#0099ff',
+            areaStyle: {}
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .contain {
+    width: 938px;
+    height: 202px;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #00bfff;
+  }
+</style>

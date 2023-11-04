@@ -1,0 +1,26 @@
+<template>
+  <view class="card" @keydown.enter="handleKeyPress">
+    <text class="text">{{ props.title }}</text>
+  </view>
+</template>
+
+<script setup>
+  const props = defineProps({
+    title: {
+      type: String,
+      require: true
+    }
+  });
+</script>
+
+<style scoped>
+  .card {
+    padding: 10px;
+    transition: box-shadow 0.3s;
+  }
+
+  .text {
+    font-size: 24px;
+    font-weight: 600;
+  }
+</style>

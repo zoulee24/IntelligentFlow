@@ -1,0 +1,51 @@
+<template>
+  <view class="main">
+    <count-to :number="props.number" :size="106" />
+    <text class="common mid_text distance-1">景区人数</text>
+    <text class="common mini_text distance-2">今日入园 {{ props.total }} 人</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import CountTo from '@/component/CountTo.vue'
+  const props = defineProps({
+    number: {
+      type: Number
+    },
+    total: {
+      type: Number
+    }
+  })
+</script>
+
+<style scoped>
+  .main {
+    width: 320px;
+    /* height: 290px; */
+    display: flex;
+    justify-content: center;
+  }
+
+  .common {
+    text-align: center;
+    color: #ffffff;
+  }
+
+  .mid_text {
+    font-size: 30px;
+    font-weight: 700;
+  }
+
+  .mini_text {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .distance-1 {
+    margin-top: 35px;
+  }
+
+  .distance-2 {
+    margin-top: 15px;
+  }
+</style>

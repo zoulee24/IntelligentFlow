@@ -1,0 +1,162 @@
+<template>
+  <view class="contain">
+    <image class="background bg-img-1" src="@/static/background.png" mode="scaleToFill" />
+    <text class="title">PowerHaven</text>
+    <text class="sub-title">选择店铺</text>
+    <view class="card-box" v-for="(item, idx) in all_camera_info" :key="idx">
+      <tv-card class="card-item" :style="card_styles[idx]" :title="item.location" />
+    </view>
+  </view>
+</template>
+
+<script setup>
+  import {
+    onShow,
+    onHide
+  } from '@dcloudio/uni-app';
+
+  import {
+    ref,
+    computed
+  } from 'vue';
+
+  import {
+    get_all_shop_location
+  } from '@/utils/api/interface.js';
+
+  import TvCard from '@/component/TvCard.nvue'
+
+  // 所有店铺信息
+  const all_camera_info = ref([]);
+  // 当前选择的店铺
+  var select = 0;
+  // 样式列表
+  var card_styles = ref([]);
+  // 选中样式
+  const select_style = 'border-width: 4px; margin: 0px;';
+
+  // 按键值
+  const keyMap = {
+    left: 21,
+    right: 22,
+    top: 19,
+    bottom: 20,
+    confirm: 23
+  }
+
+  // 案件事件
+  function key_event(event) {
+    // 判断是哪个按键
+    if (event.keyCode === keyMap.bottom) {
+      // 按下 下
+      // 清空样式
+      card_styles.value[select] = '';
+      select = Math.min(select + 1, all_camera_info.value.length);
+      // 添加样式
+      card_styles.value[select] = select_style;
+    } else if (event.keyCode === keyMap.top) {
+      // 按下 上
+      // 清空样式
+      card_styles.value[select] = '';
+      select = Math.max(select - 1, 0);
+      // 添加样式
+      card_styles.value[select] = select_style;
+    } else if (event.keyCode === keyMap.confirm && all_camera_info.value.length > 0) {
+      // 按下确认键，跳转网页
+      uni.showToast({
+        title: `跳转 => ${all_camera_info.value[select].location}`,
+        mask: true,
+        icon: 'none',
+        duration: 500
+      });
+
+      // 延时0.2s，跳转页面
+      setTimeout(() => {
+        uni.navigateTo({
+          url: `/pages/index/index?cameraId=${all_camera_info.value[select].cameraId}`
+        });
+      }, 200);
+    }
+  }
+
+  onShow(() => {
+    // 添加按键监听器
+    plus.key.removeEventListener('keydown', () => {}, false);
+    plus.key.addEventListener('keydown', key_event, false);
+
+    // 获取所有店铺位置
+    const response = get_all_shop_location();
+    response.then((data) => {
+      // 清空样式
+      card_styles.value = [];
+      if (Array.isArray(data) && data.length > 0) {
+        select = 0;
+
+        // 按照店铺数量添加样式列表
+        data.forEach(() => {
+          card_styles.value.push('');
+        });
+        // 默认选中
+        card_styles.value[select] = select_style;
+        // 存储
+        all_camera_info.value = data;
+      } else {
+        console.warn("数据不对");
+      }
+    });
+  });
+
+  onHide(() => {
+    // 取消监听按键
+    plus.key.removeEventListener('keydown', key_event);
+  })
+</script>
+
+<style scoped>
+  .contain {
+    width: 962px;
+    height: 542px;
+    overflow: hidden;
+  }
+
+  .background {
+    position: absolute;
+    z-index: -2;
+  }
+
+  .bg-img-1 {
+    top: 0;
+    left: 0;
+    width: 962px;
+    height: 542px;
+  }
+
+  .title {
+    font-size: 36px;
+    font-weight: 800;
+    text-align: center;
+    color: #00bfff;
+  }
+
+  .sub-title {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    margin: 10px;
+    color: #00bfff;
+  }
+
+  .card-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-item {
+    margin: 4px;
+    background-color: bisque;
+    border-color: #ff0000;
+
+    border-radius: 10px;
+  }
+</style>

@@ -1,0 +1,44 @@
+<template>
+  <view class="contain">
+    <image class="background hd-img-1" src="@/static/title.png" mode="scaleToFill"></image>
+    <text class="text">{{ props.title }}</text>
+  </view>
+</template>
+
+<script setup lang="ts">
+  const props = defineProps({
+    title: {
+      type: String,
+      require: true
+    }
+  })
+</script>
+
+<style scoped>
+  .contain {
+    width: 962px;
+    height: 60px;
+  }
+
+  .background {
+    position: absolute;
+    z-index: -1;
+  }
+
+  .text {
+    margin-top: 5px;
+    text-align: center;
+    font-weight: 800;
+    color: #ffffff;
+
+    font-size: 36px;
+  }
+
+  .hd-img-1 {
+    top: 0;
+    left: 0;
+
+    width: 962px;
+    height: 60px;
+  }
+</style>

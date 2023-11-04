@@ -1,0 +1,76 @@
+<template>
+  <view class="contain">
+    <view class="common w-r p-t-l b-t-l" />
+    <view class="common w-b p-t-l b-t-l" />
+
+    <view class="common w-r p-t-r b-t-r" />
+    <view class="common w-b p-t-r b-t-r" />
+
+    <view class="common w-r p-b-l b-b-l" />
+    <view class="common w-b p-b-l b-b-l" />
+
+    <view class="common w-r p-b-r b-b-r" />
+    <view class="common w-b p-b-r b-b-r" />
+    <!-- 插槽 -->
+    <slot></slot>
+  </view>
+</template>
+
+<style scoped>
+  .contain {
+    position: relative;
+    padding: 10px;
+  }
+
+  .common {
+    position: absolute;
+    background: #4788fb;
+    box-shadow: 0 0 30px #4788fb;
+  }
+
+  .w-r {
+    width: 40px;
+    height: 10px;
+  }
+
+  .w-b {
+    height: 40px;
+    width: 10px;
+  }
+
+  .b-t-l {
+    border-top-left-radius: 10px;
+  }
+
+  .b-t-r {
+    border-top-right-radius: 10px;
+  }
+
+  .b-b-l {
+    border-bottom-left-radius: 10px;
+  }
+
+  .b-b-r {
+    border-bottom-right-radius: 10px;
+  }
+
+  .p-t-l {
+    top: 0;
+    left: 0;
+  }
+
+  .p-t-r {
+    top: 0;
+    right: 0;
+  }
+
+  .p-b-l {
+    bottom: 0;
+    left: 0;
+  }
+
+  .p-b-r {
+    bottom: 0;
+    right: 0;
+  }
+</style>

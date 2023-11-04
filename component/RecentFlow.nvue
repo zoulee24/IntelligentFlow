@@ -1,0 +1,191 @@
+<template>
+  <view class="ttt">
+    <l-echart ref="chart" :hybrid="true" @finished="init" />
+  </view>
+</template>
+
+<script>
+  import {
+    defineComponent
+  } from 'vue';
+  import * as echarts from '@/uni_modules/lime-echart/static/echarts.esm.min';
+  // import * as echarts from 'echarts';
+
+  export default defineComponent({
+    name: "RecentFlow",
+    data() {
+      return {
+        options: [],
+        optionIndex: 0,
+        timer: {
+          chart: null,
+          update: null
+        },
+      }
+    },
+    props: {
+      data: {
+        type: Object,
+        // TODO: 改为必须, 删掉default
+        // require: true,
+        default: () => ({
+          y_range: ['8点', '9点', '10点', '11点'],
+          yesterday: [10, 11, 15, 30],
+          today: [20, 5, 35, 15]
+        })
+      }
+    },
+    watch: {
+      data(newVal) {
+        if (newVal != null) {
+          this.options = [this.makeOption('pictorialBar'), this.makeOption('bar')];
+          this.$refs.chart.setOption(this.options[this.optionIndex]);
+        }
+      }
+    },
+    methods: {
+      async init() {
+        // chart 图表实例不能存在data里
+        const chart = await this.$refs.chart.init(echarts);
+
+        chart.resize({
+          width: 375,
+          height: 475
+        });
+
+        this.options = [this.makeOption('pictorialBar'), this.makeOption('bar')];
+
+        chart.setOption(this.options[this.optionIndex])
+        this.timer.chart = setInterval(() => {
+          this.optionIndex = (this.optionIndex + 1) % this.options.length;
+          chart.setOption(this.options[this.optionIndex]);
+        }, 1000 * 10);
+      },
+      makeOption(type) {
+        return {
+          title: {
+            text: '近期客流',
+            textStyle: {
+              color: '#00bfff'
+            },
+            left: 15
+          },
+          legend: {
+            data: ['昨日', '今日'],
+            textStyle: {
+              fontSize: 12,
+              color: '#fff'
+            },
+            top: 0,
+            left: 100
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          grid: {
+            containLabel: true,
+            left: 0,
+            top: 22
+          },
+          yAxis: {
+            data: this.data.y_range,
+            inverse: true,
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              color: '#fff',
+              margin: 10,
+              fontSize: 14
+            },
+            axisPointer: {
+              label: {
+                show: true,
+                margin: 0,
+                fontSize: 12
+              }
+            }
+          },
+          xAxis: {
+            splitLine: {
+              show: false
+            },
+            axisLabel: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            axisLine: {
+              show: false
+            },
+            textStyle: {
+              color: '#fff'
+            }
+          },
+          animationDurationUpdate: 500,
+          series: [{
+            name: "昨日",
+            id: 'bar1',
+            type: type,
+            label: this.labelSetting,
+            symbolRepeat: true,
+            symbolSize: ['80%', '60%'],
+            barCategoryGap: '40%',
+            universalTransition: {
+              enabled: true,
+              delay: function(idx, total) {
+                return (idx / total) * 1000;
+              }
+            },
+            data: this.data.yesterday,
+            textStyle: {
+              color: '#fff'
+            }
+          }, {
+            name: "今日",
+            id: 'bar2',
+            type: type,
+            barGap: '10%',
+            label: this.labelSetting,
+            symbolRepeat: true,
+            symbolSize: ['80%', '60%'],
+            universalTransition: {
+              enabled: true,
+              delay: function(idx, total) {
+                return (idx / total) * 1000;
+              }
+            },
+            data: this.data.today,
+            textStyle: {
+              color: '#fff'
+            }
+          }]
+        }
+      }
+    },
+    unmounted() {
+      if (this.timer.chart !== null) {
+        clearInterval(this.timer.chart);
+      }
+      if (this.timer.update !== null) {
+        clearInterval(this.timer.update);
+      }
+    }
+  })
+</script>
+
+<style scoped>
+  .ttt {
+    width: 300px;
+    height: 340px;
+
+    padding-left: 20px;
+  }
+</style>
