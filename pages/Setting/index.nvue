@@ -98,7 +98,7 @@
 
 
   // 案件事件
-  function key_event(event : any) {
+  function key_event(event : PlusKeyKeyEvent) {
     switch (event.keyCode) {
       case keyMap.top:
         idx.value = Math.max(0, idx.value - 1)
