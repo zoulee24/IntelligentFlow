@@ -28,6 +28,7 @@
 
   // 所有店铺信息
   const all_camera_info = ref([]);
+
   // 当前选择的店铺
   var select = 0;
   // 样式列表
@@ -41,11 +42,13 @@
     right: 22,
     top: 19,
     bottom: 20,
-    confirm: 23
+    confirm: 23,
+    menu: 82
   }
 
   // 案件事件
   function key_event(event) {
+    // console.log('event.keyCode= ', event.keyCode);
     // 判断是哪个按键
     if (event.keyCode === keyMap.bottom) {
       // 按下 下
@@ -76,6 +79,13 @@
           url: `/pages/index/index?cameraId=${all_camera_info.value[select].cameraId}`
         });
       }, 200);
+    } else if (event.keyCode === keyMap.menu) {
+      uni.navigateTo({
+        url: '/pages/Setting/index',
+        fail: (err) => {
+          console.error('err= ', err);
+        }
+      })
     }
   }
 

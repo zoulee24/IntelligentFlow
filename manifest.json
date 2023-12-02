@@ -2,7 +2,7 @@
     "name" : "智慧景区",
     "appid" : "__UNI__70F6E66",
     "description" : "智慧景区-Powerhaven",
-    "versionName" : "1.0.1",
+    "versionName" : "1.1.0",
     "versionCode" : 101,
     "transformPx" : false,
     /* 5+App特有相关 */
@@ -40,7 +40,8 @@
             },
             /* ios打包配置 */
             "ios" : {
-                "dSYMs" : false
+                "dSYMs" : false,
+                "idfa" : false
             },
             /* SDK配置 */
             "sdkConfigs" : {
@@ -80,7 +81,8 @@
             }
         },
         "renderer" : "native",
-        "nativePlugins" : {}
+        "nativePlugins" : {},
+        "nvueLaunchMode" : ""
     },
     /* 快应用特有相关 */
     "quickapp" : {},

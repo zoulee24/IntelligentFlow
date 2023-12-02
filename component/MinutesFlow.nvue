@@ -1,6 +1,6 @@
 <template>
   <view class="contain">
-    <text class="title">妙应寺白塔分时客流</text>
+    <text class="title">{{title}}</text>
     <l-echart ref="chart" @finished="init" />
   </view>
 </template>
@@ -24,6 +24,11 @@
             260
           ]
         })
+      },
+      title: {
+        type: String,
+        require: true,
+        default: '分时客流'
       }
     },
     watch: {

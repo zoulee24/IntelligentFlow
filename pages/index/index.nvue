@@ -1,19 +1,20 @@
 <template>
   <view class="content">
     <image class="background bg-img-1" src="@/static/background.png" mode="scaleToFill" />
-    <header-title title="白塔寺智慧客流" />
+    <header-title :title="settingStore.textConfig.topTitle" />
     <view class="centre-box">
       <content-box class="test">
-        <calendar-flow :data="calendar_flow_data" />
+        <calendar-flow :data="calendar_flow_data" :title="settingStore.textConfig.leftTitle" />
       </content-box>
-      <real-time class="test-1" :number="scop_data.current_count" :total="scop_data.total_count" />
+      <real-time class="test-1" :number="scop_data.current_count" :total="scop_data.total_count"
+        :title="settingStore.textConfig.centre.title" :text="settingStore.textConfig.centre.text" />
       <content-box class="test">
-        <recent-flow :data="recent_flow_data" />
+        <recent-flow :data="recent_flow_data" :title="settingStore.textConfig.rightTitle" />
       </content-box>
     </view>
     <view class="bottom-box">
       <content-box class="bt">
-        <minutes-flow :data="minutes_flow_data" />
+        <minutes-flow :data="minutes_flow_data" :title="settingStore.textConfig.bottomTitle" />
       </content-box>
     </view>
   </view>
@@ -35,6 +36,8 @@
   import {
     TextDecoder
   } from 'text-decoding';
+
+  import { useSettingStore } from '@/utils/store'
 
   // MQTT
   import {
@@ -60,6 +63,8 @@
     recent: null,
     calendar: null
   }
+
+  const settingStore = useSettingStore()
 
   // 整合数据
   const scop_data = ref({

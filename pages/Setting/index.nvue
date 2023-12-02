@@ -1,0 +1,182 @@
+<template>
+  <view class="contain">
+    <form action="">
+      <view class="label">
+        <text>选择的是：{{idx + 1}}</text>
+      </view>
+      <view class="label">
+        <text>[1] IP：</text>
+        <input class="input" ref="ipRef" type="decimal" v-model="setting.ip" />
+      </view>
+      <view class="label">
+        <text>[2] 端口：</text>
+        <input class="input" ref="portRef" type="number" v-model="setting.port" />
+      </view>
+
+      <view class="label">
+        <text>[3] 标题：</text>
+        <input class="input" ref="topTitle" type="text" v-model="text_config.topTitle" />
+      </view>
+      <view class="label">
+        <text>[4] 左标题：</text>
+        <input class="input" ref="leftTitle" type="text" v-model="text_config.leftTitle" />
+      </view>
+      <view class="label">
+        <text>[5] 中间标题：</text>
+        <input class="input" ref="centreTitle" type="text" v-model="text_config.centre.title" />
+      </view>
+      <view class="label">
+        <text>[6] 中心文字：</text>
+        <input class="input" ref="centreText" type="text" v-model="text_config.centre.text" />
+      </view>
+      <view class="label">
+        <text>[7] 右标题：</text>
+        <input class="input" ref="rightTitle" type="text" v-model="text_config.rightTitle" />
+      </view>
+      <view class="label">
+        <text>[8] 底部标题：</text>
+        <input class="input" ref="bottomTitle" type="text" v-model="text_config.bottomTitle" />
+      </view>
+    </form>
+  </view>
+</template>
+
+<script setup lang="ts">
+  import { onReady, onShow } from '@dcloudio/uni-app'
+  import { ref, Ref } from 'vue'
+  import { useSettingStore } from '@/utils/store'
+
+  const setting : Ref<null | { ip : string, port : number }> = ref({
+    ip: '127.0.0.1',
+    port: 8080
+  })
+
+  const text_config = ref({
+    topTitle: '智慧客流',
+    leftTitle: '客流分布',
+    rightTitle: '近期客流',
+    centre: {
+      title: '景区人数',
+      text: '今日入园'
+    },
+    bottomTitle: '分时客流'
+  })
+
+  // 按键值
+  const keyMap = {
+    left: 21,
+    right: 22,
+    top: 19,
+    bottom: 20,
+    confirm: 23,
+    menu: 82
+  }
+
+  const idx = ref(0)
+  const ipRef : Ref<HTMLElement | null> = ref(null)
+  const portRef : Ref<HTMLElement | null> = ref(null)
+  const topTitle : Ref<HTMLElement | null> = ref(null)
+  const leftTitle : Ref<HTMLElement | null> = ref(null)
+  const centreTitle : Ref<HTMLElement | null> = ref(null)
+  const centreText : Ref<HTMLElement | null> = ref(null)
+  const rightTitle : Ref<HTMLElement | null> = ref(null)
+  const bottomTitle : Ref<HTMLElement | null> = ref(null)
+
+  const settingStore = useSettingStore()
+
+  onReady(() => {
+    setting.value = settingStore.setting
+    text_config.value = settingStore.textConfig
+  })
+
+
+  onShow(() => {
+    // 添加按键监听器
+    plus.key.removeEventListener('keydown', () => { });
+    plus.key.addEventListener('keydown', key_event, false);
+  })
+
+
+  // 案件事件
+  function key_event(event : any) {
+    switch (event.keyCode) {
+      case keyMap.top:
+        idx.value = Math.max(0, idx.value - 1)
+        break
+      case keyMap.bottom:
+        idx.value = Math.min(7, idx.value + 1)
+        break
+      case keyMap.confirm:
+        switch (idx.value) {
+          case 0:
+            ipRef.value.focus()
+            break
+          case 1:
+            portRef.value.focus()
+            break
+          case 2:
+            topTitle.value.focus()
+            break
+          case 3:
+            leftTitle.value.focus()
+            break
+          case 4:
+            centreTitle.value.focus()
+            break
+          case 5:
+            centreText.value.focus()
+            break
+          case 6:
+            rightTitle.value.focus()
+            break
+          case 7:
+            bottomTitle.value.focus()
+            break
+        }
+        break
+      case keyMap.menu:
+        uni.showToast({
+          title: '保存成功',
+          mask: true
+        })
+        settingStore.updateSetting(setting.value)
+        settingStore.updateText(text_config.value)
+        break
+    }
+  }
+</script>
+
+<style scoped>
+  .contain {
+    width: 962px;
+    height: 542px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input {
+    background: #d0d0d0;
+    padding: 5px;
+    margin: 5px;
+
+    width: 200px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .label {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

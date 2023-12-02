@@ -72,10 +72,7 @@ function mqtt_connect(client = null) {
 }
 
 function mqtt_disconnect(client) {
-  if (!is_mqtt_connect(client)) {
-    console.warn("mqtt 未连接");
-    return;
-  }
+  if (!is_mqtt_connect(client)) return
   try {
     client.end();
   } catch (e) {

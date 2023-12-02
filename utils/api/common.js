@@ -1,12 +1,14 @@
-const ip = '10.64.45.143';
-const port = '8080';
-export const basrUrl = `http://${ip}:${port}/power-haven`;
+import {
+  useSettingStore
+} from '../store'
+
 
 export function post(endpoint, data) {
+  const settingStore = useSettingStore()
   return new Promise((resolve, reject) => {
     uni.request({
       method: "POST",
-      url: basrUrl + endpoint,
+      url: settingStore.baseUrl + endpoint,
       data,
       success(temp) {
         if (temp.statusCode == 200) {
@@ -28,10 +30,11 @@ export function post(endpoint, data) {
 }
 
 export function get(endpoint, data = null) {
+  const settingStore = useSettingStore()
   return new Promise((resolve, reject) => {
     uni.request({
       method: "GET",
-      url: basrUrl + endpoint,
+      url: settingStore.baseUrl + endpoint,
       data,
       success(temp) {
         if (temp.statusCode == 200) {

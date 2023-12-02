@@ -1,6 +1,6 @@
 <template>
   <view class="ttt">
-    <text class="text">白塔流量分布</text>
+    <text class="text">{{title}}</text>
     <l-echart ref="chart" @finished="init" />
   </view>
 </template>
@@ -34,7 +34,13 @@
             "15:54"
           ]
         })
+      },
+      title: {
+        type: String,
+        require: true,
+        default: '流量分布'
       }
+
     },
     methods: {
       async init() {
@@ -86,7 +92,7 @@
             show: false,
             top: 0,
             left: 'center',
-            text: '白塔流量分布',
+            text: this.title,
             textStyle: {
               fontSize: 8,
               color: '#249fcc'

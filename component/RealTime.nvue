@@ -1,8 +1,8 @@
 <template>
   <view class="main">
     <count-to :number="props.number" :size="106" />
-    <text class="common mid_text distance-1">景区人数</text>
-    <text class="common mini_text distance-2">今日入园 {{ props.total }} 人</text>
+    <text class="common mid_text distance-1">{{title}}</text>
+    <text class="common mini_text distance-2">{{text}} {{ props.total }} 人</text>
   </view>
 </template>
 
@@ -14,6 +14,16 @@
     },
     total: {
       type: Number
+    },
+    title: {
+      type: String,
+      require: true,
+      default: '景区人数'
+    },
+    text: {
+      type: String,
+      require: true,
+      default: '今日入园'
     }
   })
 </script>
